@@ -22,6 +22,16 @@ const cartSchema = new Schema({
         type: String,
         required: true,
     },
+    frameColour: {
+        type: String
+    },
+
+    frameType: {
+        type: String
+    },
+    frameShape: {
+        type:String
+    },
 
     price: { 
         type: Number, 

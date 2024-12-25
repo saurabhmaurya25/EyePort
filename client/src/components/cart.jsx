@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaShoppingCart } from 'react-icons/fa';
 import Footer from './footer';
 import { BASE_URL } from '../url';
 import { setCartItems, updateItemQuantity, removeItem as removeItemAction } from '../redux/features/cartSlice';
@@ -80,101 +80,115 @@ const Cart = () => {
 
   return (
     <>
-      <div className="bg-gray-50 min-h-screen relative">
-        <div className="container mx-auto py-12 px-4 md:px-8">
-          {cartItems.length === 0 ? (
-            <div className="text-center mt-12">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
-              <Link
-                to="/products"
-                className="inline-block mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md transition duration-300"
-              >
-                Continue Shopping
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
-                {cartItems.map((item) => (
-                  <div key={item._id} className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                    <div className="p-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-24 h-24 object-cover rounded"
-                        />
+      <div className="bg-gray-100 min-h-screen py-4 md:py-8">
+        <div className="container mx-auto flex flex-col lg:flex-row gap-6">
+          {/* Cart Items */}
+          <div className="flex-1 bg-white p-4 md:p-6 rounded-lg shadow-md overflow-auto max-h-[500px]">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
+              Shopping Cart ({cartItems.length} {cartItems.length === 1 ? 'item' : 'items'})
+            </h2>
+            {cartItems.length === 0 ? (
+              <div className="text-center">
+                <FaShoppingCart className="text-gray-500 text-6xl mx-auto mb-4" />
+                <p className="text-gray-600">Your cart is empty.</p>
+                <Link
+                  to="/products"
+                  className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
+            ) : (
+              cartItems.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex items-center justify-between border-b pb-4 mb-4"
+                >
+                  <Link to={`/productDetails/${item?.productId}`}>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-lg shadow-md"
+                    />
+                  </Link>
+                  <div className="flex-1 ml-4 md:ml-6">
+                    <h3 className="text-sm md:text-lg font-bold text-gray-800">{item.name}</h3>
+                    <p className="text-gray-600">Price: ₹{item.price.toFixed(2)}</p>
+                    <p className="text-gray-600">Frame Type: {item.frameType}</p>
+                    <p className="text-gray-600">Shape: {item.frameShape}</p>
+                    <p className="text-gray-600">Colour: {item.frameColour}</p>
+                    <div className="flex items-center mt-2">
+                      {item.quantity === 1 ? (
                         <button
                           onClick={() => removeItem(item._id)}
-                          className="text-red-500 hover:text-red-700 transition duration-150"
-                          aria-label="Delete item"
+                          className="text-red-500 px-2 md:px-3"
                         >
                           <FaTrash />
                         </button>
-                      </div>
-                      <h3 className="text-lg font-semibold mb-1">{item.name}</h3>
-                      <p className="text-gray-600 mb-2">Price: ${item.price.toFixed(2)}</p>
-
-                      {/* Quantity Control */}
-                      <div className="flex items-center justify-center border rounded-full w-max p-1 border-yellow-300">
-                        {item.quantity === 1 ? (
-                          <button onClick={() => removeItem(item._id)} className="text-red-500 px-2 font-bold">
-                            <FaTrash />
-                          </button>
-                        ) : (
-                          <button onClick={() => updateQuantity(item._id, item.quantity - 1)} className="px-2 font-bold text-yellow-600">
-                            -
-                          </button>
-                        )}
-                        <div className="mx-2 px-2 font-bold text-yellow-700 text-center">
-                          {item.quantity}
-                        </div>
-                        <button onClick={() => updateQuantity(item._id, item.quantity + 1)} className="px-2 font-bold text-yellow-600">
-                          +
+                      ) : (
+                        <button
+                          onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                          className="px-2 md:px-3 font-bold text-yellow-600 hover:text-yellow-800"
+                        >
+                          -
                         </button>
-                      </div>
-
-                      <p className="mt-3 font-semibold">Subtotal: ${calculateSubtotal(item.price, item.quantity)}</p>
+                      )}
+                      <span className="mx-2 md:mx-3 px-2 font-bold text-yellow-700 text-center">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                        className="px-2 md:px-3 font-bold text-yellow-600 hover:text-yellow-800"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <div>
+                    <p className="text-sm md:text-lg font-bold text-gray-800">
+                      ₹{calculateSubtotal(item.price, item.quantity)}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
 
-              {/* Summary Section */}
-              <div className="bg-white rounded-md shadow-lg p-6 mb-8">
-                <h3 className="font-semibold text-xl mb-4">Order Summary</h3>
-                <div className="flex justify-between mb-2">
-                  <span>Subtotal</span>
-                  <span>${calculateTotalWithoutTax()}</span>
-                </div>
-                <div className="flex justify-between mb-2">
-                  <span>SGST (2.5%)</span>
-                  <span>${(calculateTotalWithoutTax() * 0.025).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between mb-2">
-                  <span>CGST (2.5%)</span>
-                  <span>${(calculateTotalWithoutTax() * 0.025).toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between mt-4 border-t pt-4">
-                  <span className="font-bold">Total</span>
-                  <span className="font-bold text-purple-600">${calculateTotal()}</span>
-                </div>
-
-                {/* Proceed to Checkout Button */}
-                <div className="mt-6 text-center">
-                  <Link to="/checkout" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full shadow-lg transition duration-300">
-                    Proceed to Checkout
-                  </Link>
-                </div>
-              </div>
-            </>
-          )}
+          {/* Billing Section */}
+          <div className="w-full lg:w-1/3 bg-white p-4 md:p-6 rounded-lg shadow-md min-w-[300px]">
+            <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-4">Order Summary</h3>
+            <div className="flex justify-between mb-3">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="text-gray-800">₹{calculateTotalWithoutTax()}</span>
+            </div>
+            <div className="flex justify-between mb-3">
+              <span className="text-gray-600">SGST (2.5%)</span>
+              <span className="text-gray-800">
+                ₹{(calculateTotalWithoutTax() * 0.025).toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between mb-3">
+              <span className="text-gray-600">CGST (2.5%)</span>
+              <span className="text-gray-800">
+                ₹{(calculateTotalWithoutTax() * 0.025).toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between mt-4 border-t pt-4">
+              <span className="text-lg font-bold text-gray-800">Total</span>
+              <span className="text-lg font-bold text-purple-600">
+                ₹{calculateTotal()}
+              </span>
+            </div>
+            <Link
+              to="/checkout"
+              className="mt-6 block w-full bg-purple-500 hover:bg-purple-600 text-white text-center py-2 md:py-3 rounded-lg font-bold transition"
+            >
+              Proceed to Checkout
+            </Link>
+          </div>
         </div>
       </div>
-      
-      {/* Toast Container for Notifications */}
       <ToastContainer />
-
       <Footer />
     </>
   );

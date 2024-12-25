@@ -11,7 +11,7 @@ dotenv.config();
 //for store the item in cart
 const addItem = async (req, res) => {
     // console.log("I am in my addItem cart",req.body);
-    const { name, userId, productId, image, price, discountPrice, quantity } = req.body;
+    const { name, userId, productId, image,frameColour,frameShape,frameType, price, discountPrice, quantity } = req.body;
 
     try {
         let cartItem = await Cart.findOne({ userId, productId });
@@ -25,6 +25,9 @@ const addItem = async (req, res) => {
                 userId,
                 productId,
                 image,
+                frameColour,
+                frameType,
+                frameShape,
                 price,
                 discountPrice,
                 quantity,
