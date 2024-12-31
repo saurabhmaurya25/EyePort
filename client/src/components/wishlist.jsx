@@ -5,6 +5,8 @@ import { BASE_URL } from '../url';
 import Footer from '../components/footer';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BsTrash3 } from "react-icons/bs";
+import { Link } from 'react-router-dom';
 
 const Wishlist = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -34,9 +36,9 @@ const Wishlist = () => {
       try {
         const { data } = await axios.delete(`${BASE_URL}/deleteItemFromWishlist`, { data: { id } });
         if (data.message) {
-          toast.success(data.message); // Show success message from backend
+          toast.success(data.message);
         }
-        setWishlistItems(wishlistItems.filter(item => item._id !== id)); // Remove the item locally after deletion
+        setWishlistItems(wishlistItems.filter((item) => item._id !== id));
       } catch (error) {
         console.error('Error removing item from wishlist:', error);
         toast.error('Something went wrong, please try again later.');
@@ -45,18 +47,19 @@ const Wishlist = () => {
   };
 
   const addToCart = async (item) => {
-    console.log("Item is: ",item);
     try {
-      // Assuming you have an endpoint for adding items to the cart
-      await axios.post(`${BASE_URL}/addItem`, { 
-      name: item.name,
-      userId,
-      productId: item.productId, 
-      image: item.image,
-      price: item.price,
-      discountPrice : item.discountPrice,
-      quantity: 1 
-    });
+      await axios.post(`${BASE_URL}/addItem`, {
+        name: item.name,
+        userId,
+        productId: item.productId,
+        image: item.image,
+        frameType: item.frameType,
+        frameShape: item.frameShape,
+        frameColour: item.frameColour,
+        price: item.price,
+        discountPrice: item.discountPrice,
+        quantity: 1,
+      });
       toast.success('Item added to cart!');
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -64,51 +67,111 @@ const Wishlist = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  const discountedPercentage = (price, discountPrice) => {
+    return (((price - discountPrice) / price) * 100).toFixed(2);
+  };
+
+  if (loading) return <div className="text-center text-xl text-gray-600 mt-16">Loading...</div>;
 
   return (
     <>
-      <div className="container mx-auto p-6">
-        <h2 className="text-4xl font-bold text-gray-800 mb-8">Your Wishlist</h2>
+      <div className="container mx-auto p-4 md:p-6 max-w-5xl">
+  {/* Banner Section */}
+  <div className="bg-gradient-to-r from-blue-400 to-purple-500 text-white p-4 md:p-8 rounded-lg shadow-lg mb-6 md:mb-8">
+    <h1 className="text-2xl md:text-4xl font-bold mb-2">Your Wishlist</h1>
+    <p className="text-sm md:text-lg">
+      Save your favorite items and never miss out on the best deals!
+    </p>
+  </div>
 
-        {wishlistItems.length === 0 ? (
-          <p className="text-xl text-gray-500">Your wishlist is empty. Start adding items!</p>
-        ) : (
-          <div className="space-y-6">
-            {wishlistItems.map((item) => (
-              <div key={item._id} className="flex items-center justify-between bg-white rounded-lg shadow-lg p-4">
-                <img src={item.image} alt={item.name} className="w-32 h-32 object-cover rounded-lg" />
-                <div className="flex flex-col flex-grow ml-4">
-                  <h3 className="text-xl font-semibold text-gray-800">{item.name}</h3>
-                  <p className="text-lg text-gray-500 mb-2">${item.price}</p>
-                  <div className="flex justify-between items-center mt-4">
-                    <button
-                      className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-                      onClick={() => removeFromWishlist(item._id)}
-                    >
-                      Remove
-                    </button>
-                    <button
-                      className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                      onClick={() => window.location.href = `/productDetails/${item.productId}`}
-                    >
-                      View Product
-                    </button>
-                    <button
-                      className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                      onClick={() => addToCart(item)}
-                    >
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+  {/* Wishlist Items */}
+  {wishlistItems.length === 0 ? (
+    <div className="text-center mt-8 md:mt-16">
+      <p className="mt-16 mb-8 text-lg md:text-xl text-gray-500">Your wishlist is empty. Start adding items!</p>
+      <Link to = "/products" className="mt-4 bg-blue-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-full hover:bg-blue-600 transition duration-300">
+        Continue Shopping
+      </Link>
+    </div>
+  ) : (
+    <div className="space-y-4 md:space-y-6 lg:space-y-8">
+  {wishlistItems.map((item) => (
+    <div
+      key={item._id}
+      className="grid grid-cols-4 md:grid-cols-5 gap-4 lg:gap-8 bg-white rounded-lg shadow-md p-4 md:p-6 hover:shadow-lg transition duration-200"
+    >
+      {/* Column 1: Product Image (1/4th of the width) */}
+      <Link to={`/productDetails/${item?.productId}`}>
+      <div className=" col-span-1 md:col-span-2 flex justify-center items-center">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-20 h-20 md:w-32 md:h-32 lg:w-52 lg:h-52 object-contain rounded-lg"
+        />
       </div>
+      </Link>
 
-      {/* Toast notifications container */}
+      {/* Column 2: Product Details and Buttons (3/4th of the width) */}
+      <div className="col-span-3 md:col-span-3 flex flex-col justify-between space-y-2 md:space-y-3 lg:space-y-4">
+        {/* Product Description */}
+        <div className="space-y-1">
+        <Link to={`/productDetails/${item?.productId}`}>
+          <h3 className="text-xs md:text-xl font-semibold text-blue-800">
+            {item.frameColour} Gradient {item.frameType} {item.frameShape} {item.name}
+          </h3>
+          </Link>
+          <div>
+            <h2 className="text-red-500">
+            <span className="text-red-600 ml-2 md:text-xl">
+              -{Math.floor(discountedPercentage(item.price, item.discountPrice))}% 
+            </span>
+
+              <span className="text-black px-1 text-xl md:text-2xl font-semibold">
+                ₹{item.discountPrice}.00
+              </span>
+              <div>
+                <span className="text-gray-500 line-through md:text-lg ml-2">
+                  M.R.P ₹{item.price}
+                </span>
+              </div>
+            </h2>
+            <p className="ml-2 text-sm">(Inclusive of all taxes)</p>
+          </div>
+          <p className="text-xs md:text-base text-gray-700 px-2">
+            Item added: {new Date(item.createdAt).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+            })}
+          </p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap space-x-4 md:space-x-16 mt-2 md:mt-4">
+          <button
+            className="bg-yellow-400 text-black px-3 md:px-8 py-1 md:py-2 rounded-full hover:bg-yellow-500 transition duration-200 text-sm md:text-base"
+            onClick={() => addToCart(item)}
+          >
+            Add to Cart
+          </button>
+
+<button
+  className=" text-black border border-black px-8 md:px-12 py-1 rounded-full hover:bg-gray-100 transition duration-200 text-sm md:text-lg flex items-center justify-center"
+  onClick={() => removeFromWishlist(item._id)}
+>
+  <BsTrash3/> 
+</button>
+
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+  )}
+
+</div>
+
+
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop closeButton={true} />
 
       <Footer />

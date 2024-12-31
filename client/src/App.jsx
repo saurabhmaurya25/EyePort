@@ -8,7 +8,7 @@ import Faq from './components/faq.jsx';
 import Products from './components/products.jsx';
 import Navigation from './components/Navigation.jsx';
 import Cart from './components/cart.jsx';
-import Checkout from './components/checkout.jsx';
+import Checkout from './components/checkout/checkout.jsx';
 import Layout from './components/account/Layout.jsx';
 import Order from './components/account/order.jsx';
 import Profile from './components/account/profile.jsx';
@@ -23,6 +23,7 @@ import PublicRoute from './components/Auth/PublicRoute.jsx'
 import OpenRoute from './components/Auth/OpenRoute.jsx';
 import AdminPanel from './pages/adminPanel/adminPanel.jsx';
 import ProductDetails from './components/productDetails.jsx';
+import ViewUser from './pages/adminPanel/viewUser.jsx';
 
 const App = () => {
 
@@ -41,6 +42,7 @@ const App = () => {
         <Route path = "/faq" element = {<OpenRoute> <Faq/> </OpenRoute>} />
         <Route path = "cart" element = {<ProtectedRoute> <Cart/> </ProtectedRoute>} />
         <Route path = "/adminPanel" element = {<ProtectedRoute> <AdminPanel/> </ProtectedRoute>} />
+        <Route path = "/viewUser/:userId" element = {<ProtectedRoute> <ViewUser/> </ProtectedRoute>} />
         <Route path = "/productDetails/:productId" element = {<OpenRoute> <ProductDetails/></OpenRoute>} />
         <Route path = "/checkout" element = {<ProtectedRoute> <Checkout/> </ProtectedRoute>} />
 

@@ -208,7 +208,7 @@ const addAddress = async (req, res) => {
       // Save the updated user document
       await user.save();
   
-      return res.status(200).json({success:true, message: "Address added successfully"});
+      return res.status(200).json({address: user.addresses[user.addresses.length - 1],success:true, message: "Address added successfully"});
     } catch (error) {
       console.error("Error adding address:", error);
       return res.status(500).json({success:false, message: "Internal server error" });
@@ -263,7 +263,7 @@ const addAddress = async (req, res) => {
       // Save the updated user document
       await user.save();
   
-      res.status(200).json({success: true, message: "Address updated successfully" });
+      res.status(200).json({address,success: true, message: "Address updated successfully" });
     } catch (error) {
       res.status(500).json({success:false, message: error.message });
     }
@@ -364,4 +364,19 @@ const updateProfile = async (req, res) => {
     }
 };
 
-export {signup, login, getUserData,updateProfile,forgotPassword,changePhone,changePassword,addAddress,updateAddress,deleteAddress};
+const userList = async (req,res) => {
+    try{
+        const users = await User.find();
+        return res.status(200).json({
+            success: true,
+            message: 'List of all registered users',
+            data: users
+          });
+    } catch(error){
+        console.error("Error in userList:", error);
+        res.status(500).json({success:false, message: 'Failed to fetch users' });
+    }
+    
+}
+
+export {signup, login, getUserData,updateProfile,forgotPassword,changePhone,changePassword,addAddress,updateAddress,deleteAddress,userList};

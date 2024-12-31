@@ -10,21 +10,38 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       if (action.payload) {
-        // console.log('Setting user:', action.payload); // Log the payload
         state.user = action.payload; // Update the user state
       } else {
         console.warn('No user data provided');
       }
     },
     logout: (state) => {
-      console.log('Logging out user'); // Log the logout action
       state.user = null; // Reset user state to null
+    },
+    addAddressToStore: (state, action) => {
+      if (state.user && state.user.addresses) {
+        state.user.addresses.push(action.payload); // Add new address
+      }
+    },
+    updateAddressInStore: (state, action) => {
+      if (state.user && state.user.addresses) {
+        state.user.addresses = state.user.addresses.map((addr) =>
+          addr._id === action.payload._id ? action.payload : addr
+        );
+      }
+    },
+    removeAddressFromStore: (state, action) => {
+      if (state.user && state.user.addresses) {
+        state.user.addresses = state.user.addresses.filter(
+          (address) => address._id !== action.payload
+        );
+      }
     },
   },
 });
 
 // Export actions
-export const { setUser, logout } = userSlice.actions;
+export const { setUser, logout, addAddressToStore, updateAddressInStore,removeAddressFromStore } = userSlice.actions;
 
 // Export reducer
 export default userSlice.reducer;

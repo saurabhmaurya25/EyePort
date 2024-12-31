@@ -9,8 +9,8 @@ dotenv.config();
 
 //for adding item in wishlist
 const addItemInWishlist = async(req,res) => {
-    console.log("I am in add item in wishlist in backend");
-    const {name,userId,productId,image,price,discountPrice} = req.body;
+    // console.log("I am in add item in wishlist in backend");
+    const {name,userId,productId,image,frameColour,frameShape,frameType,price,discountPrice} = req.body;
     try{
         let wishlistItem = await Wishlist.findOne({userId,productId});
         if(wishlistItem){
@@ -21,6 +21,9 @@ const addItemInWishlist = async(req,res) => {
                 userId,
                 productId,
                 image,
+                frameColour,
+                frameType,
+                frameShape,
                 price,
                 discountPrice
             });
@@ -36,7 +39,6 @@ const addItemInWishlist = async(req,res) => {
 
 //for getting item in wishlist
 const getItemInWishlistByUserId = async(req,res) => {
-    console.log("I am in get item from wishlist in backend",req.body);
     const userId = req.query.userId;
 
     if(!userId){

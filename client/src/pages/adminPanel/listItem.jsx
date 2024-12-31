@@ -43,7 +43,7 @@ const ListItem = () => {
     setSortOption(option);
     const sortedProducts = [...products].sort((a, b) => {
       if (option === "date") return new Date(b.createdAt) - new Date(a.createdAt);
-      if (option === "stockQuantity") return b.stockQuantity - a.stockQuantity;
+      if (option === "stockQuantity") return a.stockQuantity - b.stockQuantity;
       if (option === "price") return b.price - a.price;
       if (option === "name") return a.brandName.localeCompare(b.brandName);
       return 0;
@@ -108,10 +108,10 @@ const ListItem = () => {
   };
 
   return (
-    <div className="p-2 max-w-7xl mx-auto">
+    <div className="p-1 max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center mb-2">
-        <h1 className="sm:text-xl md:text-2xl font-bold text-gray-800">Our Product Collection</h1>
+        <h1 className="text-sm sm:text-sm md:text-2xl font-bold text-gray-800">Our Product Collection</h1>
         <p className="text-gray-600 text-xs sm:text-base">
           Explore our wide range of products. Use search and sort to find exactly what you need.
         </p>
@@ -171,9 +171,10 @@ const ListItem = () => {
               alt={product.brandName}
               className="w-full h-16 sm:h-24 md:h-32 object-cover rounded-md mb-2"
             />
-            <h3 className="font-semibold text-gray-800 truncate text-xs sm:text-sm md:text-base">
+            <h3 className="font-semibold text-gray-800 truncate text-xs md:text-base sm:scale-90">
               {product.brandName}
             </h3>
+
             <p className="text-xs sm:text-sm text-gray-500 truncate">{`ID: ${product._id}`}</p>
             <button
               onClick={() => handleEditClick(product)}

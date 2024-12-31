@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { addAddressToStore,updateAddressInStore,removeAddressFromStore } from "../../redux/features/userSlice";
 import axios from "axios";
 import { BASE_URL } from "../../url";
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,6 +13,7 @@ const Address = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const dispatch = useDispatch();
   const [addressForm, setAddressForm] = useState({
     fullName: "",
     flat: "",
@@ -28,6 +30,7 @@ const Address = () => {
 
   // Get user directly from Redux store
   const user = useSelector((state) => state.user.user);
+  // console.log("User are: ",user);
 
   useEffect(() => {
     if (user && user.addresses) {
@@ -44,7 +47,7 @@ const Address = () => {
       setLoading(false);
       if(res.data.success){
         toast.success(res.data.message);
-        setAddresses(addresses.filter((address) => address._id !== addressId));
+        dispatch(removeAddressFromStore(addressId));
       } else{
         toast.error(res.data.message);
       }
@@ -114,15 +117,12 @@ const Address = () => {
       const res = await axios[method](url, data);
       setLoading(false);
       if(res.data.success){
+        const updatedAddress = res.data.address;
         toast.success(res.data.message);
         if (addressForm._id) {
-          setAddresses(
-            addresses.map((address) =>
-              address._id === addressForm._id ? addressForm : address
-            )
-          );
+          dispatch(updateAddressInStore(updatedAddress));
         } else {
-          setAddresses([...addresses, { ...addressForm, _id: Date.now() }]);
+          dispatch(addAddressToStore(updatedAddress));
         }
       } else {
         toast.error(res.data.message);

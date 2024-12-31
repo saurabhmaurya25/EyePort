@@ -23,6 +23,17 @@ const wishlistSchema = new Schema({
         required: true,
     },
 
+    frameColour: {
+        type: String
+    },
+
+    frameType: {
+        type: String
+    },
+    frameShape: {
+        type:String
+    },
+
     price:{
         type: String,
         required: true,

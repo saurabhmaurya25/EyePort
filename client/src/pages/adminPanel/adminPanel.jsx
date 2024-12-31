@@ -2,12 +2,39 @@ import React, { useState } from 'react';
 import AddProduct from './addProduct';
 import ListItem from './listItem';
 import ExclusiveAvailable from './exclusiveAvailable';
-
+import User from './user';
+import { useSelector } from 'react-redux';
 
 
 function App() {
   const [selectedOption, setSelectedOption] = useState('Add Items');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const user = useSelector((state) => state.user.user);
+
+  // Conditional rendering based on user role
+  if (user?.role !== 'admin') {
+    return (
+      <div className="flex items-center bg-gray-100 justify-center h-screen ">
+        <div className="text-center">
+          <h1 className="text-6xl font-extrabold text-black mb-4">
+            404
+          </h1>
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-500 mb-6">
+            Oops! Page Not Found
+          </h2>
+          <p className="text-gray-600 text-lg mb-8">
+            Sorry, you don't have access to this page. Please contact the administrator if you believe this is an error.
+          </p>
+          <button
+            onClick={() => window.history.back()}
+            className="px-6 py-3 rounded-md bg-white text-indigo-700 font-bold shadow-md hover:bg-gray-200"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
   
 
   const renderContent = () => {
@@ -23,6 +50,8 @@ function App() {
             <p className="text-gray-600">Here you can view customer orders and manage deliveries.</p>
           </div>
         );
+      case 'User':
+        return <User />;
       case 'Exclusive available product':
         return <ExclusiveAvailable />;
       default:
@@ -48,7 +77,7 @@ function App() {
           <h3 className="py-10 text-center text-xl md:text-2xl font-bold tracking-wider">Dashboard</h3>
         </div>
         <ul className="flex flex-col space-y-1 px-2">
-          {['Add Items', 'List Items', 'Order', 'Exclusive available product'].map((item) => (
+          {['Add Items', 'List Items', 'Order','User', 'Exclusive available product'].map((item) => (
             <li
               key={item}
               onClick={() => {
@@ -68,7 +97,7 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow mx-6 my-6">
+      <div className="flex-grow mx-2 my-6">
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden flex items-center mb-4">
           <button

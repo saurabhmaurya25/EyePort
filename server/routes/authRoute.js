@@ -9,12 +9,14 @@ import {
     changePassword,
     addAddress,
     updateAddress,
-    deleteAddress
+    deleteAddress,
+    userList,
 } from '../controller/authController.js';
 
 const router = express.Router();
 
 router.get('/getUserData', getUserData);
+router.get('/userList',userList);
 router.post('/signup', signup);
 router.post('/login',login);
 router.put('/updateProfile',updateProfile);

@@ -114,6 +114,9 @@ const Products = () => {
             userId,
             productId: product._id,
             image: product.images[0],
+            frameColour: product.frameColour,
+            frameShape: product.frameShape,
+            frameType: product.frameType,
             price: product.price,
             discountPrice: product.discountPrice
           };

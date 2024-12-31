@@ -14,6 +14,7 @@ const ProductDetail = () => {
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const [cartLoading, setCartLoading] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   const user = useSelector((state) => state.user.user);
   const userId = user?._id;
@@ -77,6 +78,40 @@ const ProductDetail = () => {
           setCartModel(false); // Close modal
         }
   };
+
+    const addTowishlist = async () => {
+    if (!user) {
+      toast.error("Please log in to add items to your wishlist.");
+      navigate("/login");
+      return;
+    }
+    setWishlistLoading(true); // Start spinner
+      try {
+      const wishlistItem = {
+        name: product.brandName,
+        userId,
+        productId: product._id,
+        image: product.images[0],
+        frameType: product.frameType,
+        frameShape: product.frameShape,
+        frameColour: product.frameColour,
+        price: product.price,
+        discountPrice: product.discountPrice,
+      };
+        const res = await axios.post(`${BASE_URL}/addItemInWishlist`, wishlistItem);
+        if(res.data.success)
+          toast.success(res.data.message);
+        else
+          toast.error(res.data.message);
+      }
+        catch (error) {
+          console.log('Error adding product to wishlist:', error);
+          toast.error('Failed to add product to wishlist');
+        } finally {
+          setWishlistLoading(false); // Stop spinner
+        }
+  };
+
 
   const buyNow = () => {
     if (!user) {
@@ -281,7 +316,7 @@ const ProductDetail = () => {
               ))}
             </select>
           </div>
-        <button
+                <button
                   className={`w-full bg-yellow-400 text-black hover:bg-yellow-500 px-6 py-2 rounded-full flex justify-center items-center ${
                     cartLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
@@ -318,6 +353,38 @@ const ProductDetail = () => {
           >
             Buy Now
           </button>
+
+          <button
+                  className={`w-full border border-black  text-black hover:bg-gray-100 px-6 py-2 rounded-md flex justify-center items-center ${
+                    cartLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={() => addTowishlist()}
+                  disabled={wishlistLoading}
+                >
+                  {wishlistLoading ? (
+                    <svg
+                    className="animate-spin h-5 w-5 text-black mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-50"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>) : (
+                    "Add to Wishlist"
+                  )}
+                </button>
         </div>
       </div>
 
