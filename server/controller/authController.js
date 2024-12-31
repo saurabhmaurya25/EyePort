@@ -1,6 +1,9 @@
 import { validationResult } from "express-validator";
 import bcrypt from 'bcryptjs';
 import User from "../models/user.js";
+import Cart from "../models/cart.js";
+import Wishlist from "../models/wishlist.js";
+import Order from "../models/order.js";
 import { generateToken,generateTempToken,verifyToken } from "../config/secret.js";
 
 const signup = async (req,res) => {
@@ -376,7 +379,12 @@ const userList = async (req,res) => {
         console.error("Error in userList:", error);
         res.status(500).json({success:false, message: 'Failed to fetch users' });
     }
-    
 }
 
-export {signup, login, getUserData,updateProfile,forgotPassword,changePhone,changePassword,addAddress,updateAddress,deleteAddress,userList};
+const getUserById = async (req, res) => {
+    //here we will extract each and every details of a user which is clicked by admin
+    // each and every means his cart, his orders, his wishlist, his profile details etc
+}
+
+
+export {signup, login, getUserData,updateProfile,forgotPassword,changePhone,changePassword,addAddress,updateAddress,deleteAddress,userList,getUserById};

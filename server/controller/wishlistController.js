@@ -77,9 +77,5 @@ const deleteItemFromWishlist = async(req,res) => {
     
 }
 
-//for deleting the whole item of any particular userId from admin in worst case
-const deleteItemByUserIdFromWishlist = async(req,res) => {
-    console.log("I am in delete item by user id from wishlist in backend");
-}
 
-export {addItemInWishlist,getItemInWishlistByUserId,deleteItemFromWishlist,deleteItemByUserIdFromWishlist};
+export {addItemInWishlist,getItemInWishlistByUserId,deleteItemFromWishlist};

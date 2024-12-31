@@ -11,6 +11,7 @@ import {
     updateAddress,
     deleteAddress,
     userList,
+    getUserById
 } from '../controller/authController.js';
 
 const router = express.Router();
@@ -26,5 +27,5 @@ router.post('/forgotPassword', forgotPassword);
 router.post('/addAddress',addAddress);
 router.put('/updateAddress',updateAddress);
 router.delete('/deleteAddress',deleteAddress);
-
+router.get('/getUserById',getUserById);
 export default router;
